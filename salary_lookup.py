@@ -26,16 +26,27 @@ from pathlib import Path
 
 DATA_FILE = Path(__file__).parent / "salary_data.json"
 
-# Common Danish <-> anglicized spelling variants
+# Common Danish <-> anglicized spelling variants and Spanish accents
 SPELLING_VARIANTS = {
     "ø": "o", "æ": "ae", "å": "aa",
     "ö": "o", "ä": "ae", "ü": "u",
+    "á": "a", "é": "e", "í": "i", "ó": "o", "ú": "u",
+    "ñ": "n",
 }
 
 # Legal suffixes and noise to strip when matching company names
 STRIP_PATTERNS = [
     r"\ba/s\b", r"\baps\b", r"\bi/s\b", r"\bp/s\b", r"\bk/s\b",
     r"\bivs\b", r"\bamba\b", r"\ba\.m\.b\.a\.?\b",
+    # Colombian & LATAM corporate forms
+    r"\bs\.?\s*a\.?\s*s\.?\b",    # S.A.S., S. A. S., SAS
+    r"\bs\.?\s*a\.?\b",          # S.A., S. A., SA
+    r"\bltda\.?\b",               # Ltda, LTDA.
+    r"\be\.?\s*u\.?\b",          # E.U., E. U. (Empresa Unipersonal)
+    r"\bs\.?\s*en\s*c\.?\b",      # S. en C. (Sociedad en Comandita)
+    r"\bs\.?\s*c\.?\s*a\.?\b",    # S.C.A. (Sociedad en Comandita por Acciones)
+    r"\bb\.?\s*i\.?\s*c\.?\b",    # B.I.C. (Beneficio e Interés Colectivo)
+    r"\bcolombia\b",              # Subsidiary / national division marker
     r"\(vg\)", r"\(.*?\)",  # (VG) and other parentheticals
     r"\bdanmark\b", r"\bdenmark\b", r"\bscandinavia\b", r"\bnordic\b",
     r"\bgroup\b", r"\bholding\b",
@@ -166,15 +177,15 @@ def normalize(s):
     s = s.lower().strip()
     for pat in STRIP_PATTERNS:
         s = re.sub(pat, "", s)
-    s = re.sub(r"[^a-zæøåöäü0-9]", "", s)
+    s = re.sub(r"[^a-zæøåöäüáéíóúñ0-9]", "", s)
     return s.strip()
 
 
 def anglicize(s):
-    """Convert Danish/Nordic characters to anglicized equivalents."""
+    """Convert Danish/Nordic/Spanish characters to anglicized equivalents."""
     s = s.lower()
-    for danish, english in SPELLING_VARIANTS.items():
-        s = s.replace(danish, english)
+    for variant, replacement in SPELLING_VARIANTS.items():
+        s = s.replace(variant, replacement)
     return s
 
 
@@ -183,7 +194,7 @@ def extract_core_words(s):
     s = s.lower()
     for pat in STRIP_PATTERNS:
         s = re.sub(pat, "", s)
-    words = re.findall(r"[a-zæøåöäü0-9]+", s)
+    words = re.findall(r"[a-zæøåöäüáéíóúñ0-9]+", s)
     return [w for w in words if len(w) > 1]
 
 

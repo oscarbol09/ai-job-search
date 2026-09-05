@@ -136,6 +136,24 @@ class TestMatchScoreExactMatch(unittest.TestCase):
         # strip just as cleanly.
         self.assertEqual(match_score("Arla Foods", "Arla Foods A.M.B.A."), 100)
 
+    def test_exact_match_colombian_legal_suffixes(self):
+        self.assertEqual(match_score("Bancolombia", "Bancolombia S.A."), 100)
+        self.assertEqual(match_score("Bancolombia", "Bancolombia S. A."), 100)
+        self.assertEqual(match_score("Rappi", "Rappi S.A.S."), 100)
+        self.assertEqual(match_score("Rappi", "Rappi SAS"), 100)
+        self.assertEqual(match_score("Rappi", "Rappi S. A. S."), 100)
+        self.assertEqual(match_score("Carvajal", "Carvajal LTDA."), 100)
+        self.assertEqual(match_score("Carvajal", "Carvajal Ltda"), 100)
+        self.assertEqual(match_score("Empresa Unipersonal", "Empresa Unipersonal E.U."), 100)
+        self.assertEqual(match_score("Comandita", "Comandita S. en C."), 100)
+        self.assertEqual(match_score("Sociedad Acciones", "Sociedad Acciones S.C.A."), 100)
+        self.assertEqual(match_score("Crepes & Waffles", "Crepes & Waffles B.I.C."), 100)
+        self.assertEqual(match_score("MercadoLibre", "MercadoLibre Colombia S.A.S."), 100)
+
+    def test_exact_match_spanish_accents(self):
+        self.assertEqual(match_score("Almacenes Éxito", "Almacenes Exito"), 85)
+        self.assertEqual(match_score("Seguros Bolívar", "Seguros Bolivar S.A."), 85)
+
 
 class TestMatchScoreSubstring(unittest.TestCase):
     def test_query_contained_in_entry_gives_high_score(self):
