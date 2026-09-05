@@ -1,0 +1,12 @@
+{
+  "name": "spe-search-cli",
+  "version": "1.0.0",
+  "description": "CLI for searching jobs and fetching details from Servicio Publico de Empleo Colombia (buscadordeempleo.gov.co)",
+  "type": "module",
+  "scripts": {
+    "test": "bun test"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  }
+}

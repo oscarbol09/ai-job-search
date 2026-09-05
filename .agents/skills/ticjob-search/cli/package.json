@@ -1,0 +1,12 @@
+{
+  "name": "ticjob-search-cli",
+  "version": "1.0.0",
+  "description": "CLI for searching specialized IT jobs on Ticjob Colombia (ticjob.co)",
+  "type": "module",
+  "scripts": {
+    "test": "bun test"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  }
+}
