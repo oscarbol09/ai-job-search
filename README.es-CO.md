@@ -60,6 +60,24 @@ bun run .agents/skills/ticjob-search/cli/src/cli.ts detail "<URL_O_ID_TICJOB>" -
 
 ---
 
+### 6. Calculador de Compensación Laboral Colombia (`tools/compensation/colombia.py`)
+Compara y normaliza equitativamente ofertas en Colombia bajo esquemas de contrato laboral dependiente, prestación de servicios (honorarios / PILA) y ofertas remotas en USD:
+```bash
+# Calcular oferta laboral con prestaciones de ley (prima, cesantías, intereses, vacaciones)
+python tools/compensation/colombia.py --laboral 8000000
+
+# Calcular oferta por prestación de servicios (PILA: salud 12.5%, pensión 16%, ARL)
+python tools/compensation/colombia.py --servicios 10000000
+
+# Calcular oferta remota en USD convertida a TRM de mercado
+python tools/compensation/colombia.py --usd 2500 --trm 4150
+
+# Tabla comparativa automática entre múltiples esquemas
+python tools/compensation/colombia.py --compare --laboral 7000000 --servicios 9000000 --usd 2200
+```
+
+---
+
 ## 🎯 Integración en el Flujo de Trabajo (/scrape, /rank, /apply)
 
 1. **Búsqueda unificada:** Al ejecutar `/scrape` o invocar un skill individual, el agente consulta los portales de Colombia y normaliza los resultados bajo el contrato unificado:
@@ -71,8 +89,9 @@ bun run .agents/skills/ticjob-search/cli/src/cli.ts detail "<URL_O_ID_TICJOB>" -
    - `date`: Fecha de publicación en formato ISO `YYYY-MM-DD`.
    - `deadline`: Fecha límite de postulación si está disponible.
    - `url`: Enlace directo a la oferta oficial.
-2. **Evaluación de calce (/rank):** El agente compara la descripción y requisitos extraídos contra tu perfil en `01-candidate-profile.md` y clasifica las ofertas según relevancia.
-3. **Postulación a la medida (/apply):** Se redacta el CV y la carta de presentación adaptados a la vacante específica.
+2. **Estrategia preconfigurada para Colombia:** Consulta [search-queries.es-CO.md](file:///.claude/skills/job-scraper/search-queries.es-CO.md) para ver la plantilla adaptada a las principales regiones (Bogotá, Medellín, Cali, Barranquilla, Eje Cafetero y Remoto nacional) y roles de software, data, cloud y producto.
+3. **Evaluación de calce (/rank):** El agente compara la descripción y requisitos extraídos contra tu perfil en `01-candidate-profile.md` y clasifica las ofertas según relevancia, normalizando las compensaciones financieras mediante `tools/compensation/colombia.py`.
+4. **Postulación a la medida (/apply):** Se redacta el CV y la carta de presentación adaptados a la vacante específica.
 
 ---
 
